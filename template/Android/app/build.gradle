@@ -1,0 +1,86 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "TEMPLATE_UUID"
+        minSdkVersion 15
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions { 
+         checkReleaseBuilds false
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation project(path: ':classes')
+}
+
+task copyAssets(type: Copy) {
+    println "I'm copyAssets task!"
+    from "../../Assets"
+    into "src/main/assets"
+}
+
+task copyDotNetAssets(type: Copy) {
+    println "I'm copyDotNetAssets task!"
+    from("../../libs/dotnet/bcl") {
+        include "android/**"
+    }
+    from("../../libs/dotnet/urho/mobile") {
+        include "android/UrhoDotNet.dll"
+    }
+    into "src/main/assets/Data/DotNet"
+}
+
+task dotnetBuildRelease {
+    exec {
+        println "I'm dotnetBuildRelease task!"
+        workingDir '../../'
+        commandLine 'dotnet','build','--configuration','Release'
+    }
+    
+}
+
+task dotnetBuildDebug {
+    exec {
+        println "I'm dotnetBuildDebug task!"
+        workingDir '../../'
+        commandLine 'dotnet','build','--configuration','Debug'
+    }
+}
+
+task dotnetRelease {
+    println "I'm dotnetRelease task!"
+    mustRunAfter("copyAssets",'copyDotNetAssets','dotnetBuildRelease')
+    dependsOn('copyAssets','copyDotNetAssets','dotnetBuildRelease','assembleRelease')
+}
+
+task dotnetDebug {
+    println "I'm dotnetDebug task!"
+    mustRunAfter("copyAssets",'copyDotNetAssets','dotnetBuildDebug')
+    dependsOn('copyAssets','copyDotNetAssets','dotnetBuildDebug','assembleDebug')
+}
