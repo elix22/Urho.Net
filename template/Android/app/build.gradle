@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "TEMPLATE_UUID"
+        applicationId "com.elix22.testproject"
         minSdkVersion 15
         targetSdkVersion 29
         versionCode 1
@@ -47,14 +47,12 @@ task copyAssets(type: Copy) {
 
 task copyDotNetAssets(type: Copy) {
     println "I'm copyDotNetAssets task!"
-    from("../../libs/dotnet/bcl") {
-        include "android/**"
-    }
     from("../../libs/dotnet/urho/mobile") {
         include "android/UrhoDotNet.dll"
     }
     into "src/main/assets/Data/DotNet"
 }
+
 
 task dotnetBuildRelease {
     exec {
@@ -73,14 +71,23 @@ task dotnetBuildDebug {
     }
 }
 
-task dotnetRelease {
-    println "I'm dotnetRelease task!"
-    mustRunAfter("copyAssets",'copyDotNetAssets','dotnetBuildRelease')
-    dependsOn('copyAssets','copyDotNetAssets','dotnetBuildRelease','assembleRelease')
+task dotnetResolveReferences {
+    mustRunAfter("dotnetBuildDebug",'dotnetBuildRelease')
+    exec {
+        println "I'm dotnetResolveReferences task!"
+        commandLine '../tools/ReferenceAssemblyResolver/ReferenceAssemblyResolver.exe','--assembly','./src/main/assets/Data/DotNet/Game.dll' , '--output', 'src/main/assets/Data/DotNet/android' , '--search' , '../../libs/dotnet/urho/mobile/android,../../libs/dotnet/bcl/android,../../libs/dotnet/bcl/android/Facades'
+    }
+    
 }
 
 task dotnetDebug {
     println "I'm dotnetDebug task!"
-    mustRunAfter("copyAssets",'copyDotNetAssets','dotnetBuildDebug')
-    dependsOn('copyAssets','copyDotNetAssets','dotnetBuildDebug','assembleDebug')
+    mustRunAfter("copyAssets",'copyDotNetAssets','dotnetBuildDebug','dotnetResolveReferences')
+    dependsOn('copyAssets','copyDotNetAssets','dotnetBuildDebug','dotnetResolveReferences','assembleDebug')
+}
+
+task dotnetRelease {
+    println "I'm dotnetRelease task!"
+    mustRunAfter("copyAssets",'copyDotNetAssets','dotnetBuildRelease','dotnetResolveReferences')
+    dependsOn('copyAssets','copyDotNetAssets','dotnetBuildRelease','dotnetResolveReferences','assembleRelease')
 }
