@@ -22,19 +22,21 @@
 #
 
 export URHO3D_HOME=$(pwd)
-export MONO_PATH=../../libs/dotnet/bcl/ios
-export URHO3D_DLL_PATH=../../libs/dotnet/urho/mobile/ios
+export MONO_PATH=${URHO3D_HOME}/../libs/dotnet/bcl/ios
+export URHO3D_DLL_PATH=${URHO3D_HOME}/../libs/dotnet/urho/mobile/ios
 export XCODE=$(xcode-select --print-path)
 export CLANG=${XCODE}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
 export AR=${XCODE}/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar
 export LIPO=${XCODE}/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo
 export IOS_SDK_PATH=${XCODE}/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk
-export MONO_IOS_AOT_CC_PATH=../aot-compilers/iphone-arm64
-export MONO_IOS_AOT_CC=./${MONO_IOS_AOT_CC_PATH}/aarch64-apple-darwin-mono-sgen
-export ASSETS_FOLDER_DOTNET_PATH=bin/Data/DotNet
-export ASSETS_FOLDER_DOTNET_IOS_PATH=bin/Data/DotNet/ios
+export MONO_IOS_AOT_CC_PATH=${URHO3D_HOME}/aot-compilers/iphone-arm64
+export MONO_IOS_AOT_CC=${MONO_IOS_AOT_CC_PATH}/aarch64-apple-darwin-mono-sgen
+export ASSETS_FOLDER_DOTNET_PATH=${URHO3D_HOME}/bin/Data/DotNet
+export ASSETS_FOLDER_DOTNET_IOS_PATH=${URHO3D_HOME}/bin/Data/DotNet/ios
 export C_SHARP_SOURCE_CODE='../../Program.cs  -recurse:'../../Source/*.cs''
 export INTERMEDIATE_FOLDER=intermediate
+IOS_AOT_MODULES_HEADER=${URHO3D_HOME}/ios_aot_modules.h
+IOS_AOT_MODULES_MM=${URHO3D_HOME}/ios_aot_modules.mm
 
 export BUILD_DIR=build
 
@@ -44,7 +46,6 @@ export LOWER_APP_NAME=$(echo ${APP_NAME} |  tr 'A-Z' 'a-z')
 
 shopt -s expand_aliases
 alias aliassedinplace='sed -i ""'
-
 
 warn() {
     printf >&2 "$SCRIPTNAME: $*\n"
@@ -68,21 +69,6 @@ checkdeps() {
     }
 }
 
-aot_compile_file()
-{
-    if [ -f $3/$2.o ]; then
-        if [ $1/$2 -nt $3/$2.o ]; then
-            #echo "$1/$2 newer then $3/$2.o"
-            cp $1/$2 ${ASSETS_FOLDER_DOTNET_IOS_PATH}
-            ${MONO_IOS_AOT_CC}   --aot=asmonly,full,direct-icalls,direct-pinvoke,static,mtriple=arm64-ios,outfile=$3/$2.s  -O=gsharedvt $1/$2
-            ${CLANG} -isysroot ${IOS_SDK_PATH} -Qunused-arguments -miphoneos-version-min=10.0  -arch arm64 -c -o $3/$2.o -x assembler $3/$2.s 
-        fi
-    else
-        cp $1/$2 ${ASSETS_FOLDER_DOTNET_IOS_PATH}
-        ${MONO_IOS_AOT_CC}   --aot=asmonly,full,direct-icalls,direct-pinvoke,static,mtriple=arm64-ios,outfile=$3/$2.s  -O=gsharedvt $1/$2
-        ${CLANG} -isysroot ${IOS_SDK_PATH} -Qunused-arguments -miphoneos-version-min=10.0  -arch arm64 -c -o $3/$2.o -x assembler $3/$2.s 
-    fi
-}
 
 
 copy_file()
@@ -93,6 +79,20 @@ copy_file()
         cp $1/$2 $3
     fi
     
+}
+
+aot_compile_file()
+{
+    filename=$(basename -- "$1")
+    if [ -f ${INTERMEDIATE_FOLDER}/${filename}.o ]; then
+        if [ $1 -nt ${INTERMEDIATE_FOLDER}/${filename}.o ]; then
+            ${MONO_IOS_AOT_CC}   --aot=asmonly,full,direct-icalls,direct-pinvoke,static,mtriple=arm64-ios,outfile=${INTERMEDIATE_FOLDER}/${filename}.s  -O=gsharedvt $1
+            ${CLANG} -isysroot ${IOS_SDK_PATH} -Qunused-arguments -miphoneos-version-min=10.0  -arch arm64 -c -o ${INTERMEDIATE_FOLDER}/${filename}.o -x assembler ${INTERMEDIATE_FOLDER}/${filename}.s
+        fi
+    else
+        ${MONO_IOS_AOT_CC}   --aot=asmonly,full,direct-icalls,direct-pinvoke,static,mtriple=arm64-ios,outfile=${INTERMEDIATE_FOLDER}/${filename}.s  -O=gsharedvt $1
+        ${CLANG} -isysroot ${IOS_SDK_PATH} -Qunused-arguments -miphoneos-version-min=10.0  -arch arm64 -c -o ${INTERMEDIATE_FOLDER}/${filename}.o -x assembler ${INTERMEDIATE_FOLDER}/${filename}.s
+    fi
 }
 
 
@@ -152,13 +152,11 @@ check_ios_env_vars
 
 mkdir -p ${ASSETS_FOLDER_DOTNET_IOS_PATH}
 
-# first run camke
-./script/cmake_ios_dotnet.sh ${BUILD_DIR} -DDEVELOPMENT_TEAM=${DEVELOPMENT_TEAM} -DCODE_SIGN_IDENTITY=${CODE_SIGN_IDENTITY} -DPROVISIONING_PROFILE_SPECIFIER=${PROVISIONING_PROFILE_SPECIFIER}
-
-
 mkdir -p ${BUILD_DIR}
 cd ${BUILD_DIR}
+export BUILD_DIR=$(pwd) 
 mkdir ${INTERMEDIATE_FOLDER}
+export INTERMEDIATE_FOLDER=${BUILD_DIR}/${INTERMEDIATE_FOLDER}
 
 
 cp ../script/ios.entitlements .
@@ -173,25 +171,87 @@ mcs  /target:exe /out:Game.dll /reference:UrhoDotNet.dll /platform:x64 ${C_SHARP
 mkdir -p ${ASSETS_FOLDER_DOTNET_PATH}
 cp Game.dll ${ASSETS_FOLDER_DOTNET_PATH}
 
+dotnet ../../tools/ReferenceAssemblyResolver/ReferenceAssemblyResolver.dll --assembly "${ASSETS_FOLDER_DOTNET_PATH}/Game.dll"  --output  ${ASSETS_FOLDER_DOTNET_IOS_PATH}  --search "${URHO3D_DLL_PATH},${MONO_PATH},${MONO_PATH}/Facades"
 
-aot_compile_file ${MONO_PATH} mscorlib.dll ${INTERMEDIATE_FOLDER}
-aot_compile_file ${MONO_PATH} System.Core.dll ${INTERMEDIATE_FOLDER}
-aot_compile_file ${MONO_PATH} System.dll ${INTERMEDIATE_FOLDER}
-aot_compile_file ${MONO_PATH} System.Xml.dll ${INTERMEDIATE_FOLDER}
-aot_compile_file ${MONO_PATH} Mono.Security.dll ${INTERMEDIATE_FOLDER}
-aot_compile_file ${MONO_PATH} System.Numerics.dll ${INTERMEDIATE_FOLDER}
-aot_compile_file ${MONO_PATH}/Facades System.Runtime.dll ${INTERMEDIATE_FOLDER}
-aot_compile_file ${MONO_PATH}/Facades System.Threading.Tasks.dll ${INTERMEDIATE_FOLDER}
-aot_compile_file ${MONO_PATH}/Facades System.Linq.dll ${INTERMEDIATE_FOLDER}
-aot_compile_file . UrhoDotNet.dll ${INTERMEDIATE_FOLDER}
-aot_compile_file . Game.dll ${INTERMEDIATE_FOLDER}
 
+# AOT compile all relevent assemblies
+export MONO_PATH=${ASSETS_FOLDER_DOTNET_IOS_PATH}
+for i in ${ASSETS_FOLDER_DOTNET_IOS_PATH}/*.dll; do aot_compile_file  ${i} ${INTERMEDIATE_FOLDER}; done
+aot_compile_file ${ASSETS_FOLDER_DOTNET_PATH}/Game.dll ${INTERMEDIATE_FOLDER}
 
 ${AR} cr lib-urho3d-mono-aot.a  ${INTERMEDIATE_FOLDER}/*.o
-
 mv lib-urho3d-mono-aot.a ../../libs/ios
 
 
-xcodebuild -project ../${BUILD_DIR}/${APP_NAME}.xcodeproj
+ios_aot_modules_header_prolog()
+{
+    echo "#ifndef IOS_AOT_MODULES_H" >> ${IOS_AOT_MODULES_HEADER}
+    echo "#define IOS_AOT_MODULES_H" >> ${IOS_AOT_MODULES_HEADER}
+    echo " " >> ${IOS_AOT_MODULES_HEADER}
+    echo "extern \"C\" {" >> ${IOS_AOT_MODULES_HEADER}
+}
 
-ios-deploy --justlaunch --bundle ../${BUILD_DIR}/bin/${APP_NAME}.app
+ios_aot_modules_header_epilog()
+{
+
+    echo "} // extern "C"" >> ${IOS_AOT_MODULES_HEADER}
+    echo " " >> ${IOS_AOT_MODULES_HEADER}
+    echo "void ios_aot_register_modules();" >> ${IOS_AOT_MODULES_HEADER}
+    echo " " >> ${IOS_AOT_MODULES_HEADER}
+    echo "#endif" >> ${IOS_AOT_MODULES_HEADER}
+}
+
+iot_aot_modules_header_populate()
+{
+    filename=$(basename -- "$1" .dll)
+    filename=$(echo "$filename" | tr '.' '_')
+    echo "  extern void * mono_aot_module_"$filename"_info;">> ${IOS_AOT_MODULES_HEADER}
+}
+
+
+# create and fill aot modules header
+rm ${IOS_AOT_MODULES_HEADER}
+touch ${IOS_AOT_MODULES_HEADER}
+ios_aot_modules_header_prolog
+for i in ${ASSETS_FOLDER_DOTNET_IOS_PATH}/*.dll; do iot_aot_modules_header_populate  ${i}; done
+iot_aot_modules_header_populate ${ASSETS_FOLDER_DOTNET_PATH}/Game.dll
+ios_aot_modules_header_epilog
+
+
+
+ios_aot_modules_mm_prolog()
+{
+    echo "#include <mono/jit/jit.h>" >> ${IOS_AOT_MODULES_MM}
+    echo "#include \"ios_aot_modules.h\"" >> ${IOS_AOT_MODULES_MM}
+    echo "void ios_aot_register_modules()" >> ${IOS_AOT_MODULES_MM}
+    echo "{" >> ${IOS_AOT_MODULES_MM}
+}
+
+ios_aot_modules_mm_epilog()
+{
+    echo "}" >> ${IOS_AOT_MODULES_MM}
+}
+
+iot_aot_modules_mm_populate()
+{
+    filename=$(basename -- "$1" .dll)
+    filename=$(echo "$filename" | tr '.' '_')
+    echo "  mono_aot_register_module((void **)mono_aot_module_"$filename"_info);">> ${IOS_AOT_MODULES_MM}
+}
+
+# create and fill aot modules mm file
+rm ${IOS_AOT_MODULES_MM}
+touch ${IOS_AOT_MODULES_MM}
+ios_aot_modules_mm_prolog
+for i in ${ASSETS_FOLDER_DOTNET_IOS_PATH}/*.dll; do iot_aot_modules_mm_populate  ${i}; done
+iot_aot_modules_mm_populate ${ASSETS_FOLDER_DOTNET_PATH}/Game.dll
+ios_aot_modules_mm_epilog
+
+
+# first run camke
+${URHO3D_HOME}/script/cmake_ios_dotnet.sh ${BUILD_DIR} -DDEVELOPMENT_TEAM=${DEVELOPMENT_TEAM} -DCODE_SIGN_IDENTITY=${CODE_SIGN_IDENTITY} -DPROVISIONING_PROFILE_SPECIFIER=${PROVISIONING_PROFILE_SPECIFIER}
+
+xcodebuild -project ${BUILD_DIR}/${APP_NAME}.xcodeproj
+
+ios-deploy --justlaunch --bundle  ${BUILD_DIR}/bin/${APP_NAME}.app
+
