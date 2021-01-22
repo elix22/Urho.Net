@@ -53,6 +53,7 @@ set (LIBS
     "-framework GSS"
     "-framework CFNetwork"
     "-framework SystemConfiguration"
+    "-framework Metal"
 )
 set(BITCODE "")
 set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "NO" CACHE INTERNAL "")

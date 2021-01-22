@@ -24,6 +24,8 @@
 export URHO3D_HOME=$(pwd)
 export MONO_PATH=${URHO3D_HOME}/../libs/dotnet/bcl/ios
 export URHO3D_DLL_PATH=${URHO3D_HOME}/../libs/dotnet/urho/mobile/ios
+export URHO3D_LIB_GLES_PATH=${URHO3D_HOME}/../libs/ios/urho3d/gles
+export URHO3D_LIB_METAL_PATH=${URHO3D_HOME}/../libs/ios/urho3d/metal
 export XCODE=$(xcode-select --print-path)
 export CLANG=${XCODE}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
 export AR=${XCODE}/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar
@@ -146,6 +148,35 @@ check_ios_env_vars()
 
 # check dependencies
 checkdeps brew cmake xcodebuild ios-deploy codesign mcs
+
+
+#Configure Rendereing backend either GLES or Metal 
+if [ -f ${URHO3D_HOME}/lib/libUrho3D.a ] ; then
+        echo "ilibUrho3D found "
+else
+        echo "Enter rendering backend."
+        echo "Enter 1 for GLES or 2 for Metal"
+        read -p "rendering backend: " rendering_backend
+        if [[ "$rendering_backend" == "" ]]; then
+            echo
+            echo "No rendering backend specified , configuring default GLES rendering backend."
+            rendering_backend="1"
+        fi
+
+        if [[ "$rendering_backend" == "1" ]]; then
+            echo "Configuring GLES rendering backend."
+            mkdir -p ${URHO3D_HOME}/lib
+            cp ${URHO3D_LIB_GLES_PATH}/libUrho3D.a ${URHO3D_HOME}/lib
+        elif [[ "$rendering_backend" == "2" ]]; then
+            echo "Configuring Metal rendering backend."
+            mkdir -p ${URHO3D_HOME}/lib
+            cp ${URHO3D_LIB_METAL_PATH}/libUrho3D.a ${URHO3D_HOME}/lib
+        else
+            echo "Invalid option  , configuring default GLES rendering backend."
+            mkdir -p ${URHO3D_HOME}/lib
+            cp ${URHO3D_LIB_GLES_PATH}/libUrho3D.a ${URHO3D_HOME}/lib
+        fi
+fi
 
 # check/set  ios environment variables
 check_ios_env_vars
