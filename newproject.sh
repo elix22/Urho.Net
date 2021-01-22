@@ -164,7 +164,7 @@ aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/Source/${projNa
 aliassedinplace "s*TEMPLATE_CLASS_NAME*$className*g" "$projPath/Source/${projName}.cs"
 
 aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/Source/Sample.cs"
-
+aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/Source/JoystickLayoutPatches.cs"
 
 cp "template/Program.cs" "$projPath/Program.cs"
 aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/Program.cs"

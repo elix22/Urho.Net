@@ -46,11 +46,13 @@ export UUID='TEMPLATE_UUID'
 export APP_NAME='TEMPLATE_PROJECT_NAME' 
 export LOWER_APP_NAME=$(echo ${APP_NAME} |  tr 'A-Z' 'a-z')
 
-while getopts d: option
+while getopts d:r:t: option
 do
 case "${option}"
 in
 d) DEPLOY=${OPTARG};;
+r) RENDERING_BACKEND=${OPTARG};;
+t) DEVELOPMENT_TEAM=${OPTARG};;
 esac
 done
 
@@ -157,6 +159,25 @@ check_ios_env_vars()
 # check dependencies
 checkdeps brew cmake xcodebuild ios-deploy codesign mcs
 
+if [[ "$RENDERING_BACKEND" == "gles" ]]; then
+    mkdir -p ${URHO3D_HOME}/lib
+    cp ${URHO3D_LIB_GLES_PATH}/libUrho3D.a ${URHO3D_HOME}/lib    
+fi
+
+if [[ "$RENDERING_BACKEND" == "metal" ]]; then
+    mkdir -p ${URHO3D_HOME}/lib
+    cp ${URHO3D_LIB_METAL_PATH}/libUrho3D.a ${URHO3D_HOME}/lib   
+fi
+
+if [[ "$DEVELOPMENT_TEAM" != "" ]]; then
+echo "$DEVELOPMENT_TEAM not empty" 
+    mkdir -p ${BUILD_DIR}  
+    cp ./script/ios_env_vars.sh ${BUILD_DIR}
+    aliassedinplace "s*T_DEVELOPMENT_TEAM*$DEVELOPMENT_TEAM*g" "${BUILD_DIR}/ios_env_vars.sh"
+    aliassedinplace "s*T_CODE_SIGN_IDENTITY*""*g" "${BUILD_DIR}/ios_env_vars.sh"
+    aliassedinplace "s*T_PROVISIONING_PROFILE_SPECIFIER*""*g" "${BUILD_DIR}/ios_env_vars.sh"
+     . ${BUILD_DIR}/ios_env_vars.sh
+fi
 
 #Configure Rendereing backend either GLES or Metal 
 if [ -f ${URHO3D_HOME}/lib/libUrho3D.a ] ; then
