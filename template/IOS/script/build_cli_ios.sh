@@ -46,6 +46,14 @@ export UUID='TEMPLATE_UUID'
 export APP_NAME='TEMPLATE_PROJECT_NAME' 
 export LOWER_APP_NAME=$(echo ${APP_NAME} |  tr 'A-Z' 'a-z')
 
+while getopts d: option
+do
+case "${option}"
+in
+d) DEPLOY=${OPTARG};;
+esac
+done
+
 shopt -s expand_aliases
 alias aliassedinplace='sed -i ""'
 
@@ -198,9 +206,15 @@ aliassedinplace "s*T_UUID*$UUID*g" "ios.entitlements"
 copy_file ${URHO3D_DLL_PATH} UrhoDotNet.dll .
 
 
+rm Game.dll
 mcs  /target:exe /out:Game.dll /reference:UrhoDotNet.dll /platform:x64 ${C_SHARP_SOURCE_CODE}
-mkdir -p ${ASSETS_FOLDER_DOTNET_PATH}
-cp Game.dll ${ASSETS_FOLDER_DOTNET_PATH}
+if [ -f ./Game.dll ] ; then
+    mkdir -p ${ASSETS_FOLDER_DOTNET_PATH}
+    cp Game.dll ${ASSETS_FOLDER_DOTNET_PATH}
+else
+    echo "Game.dll not found aborting"
+    exit -1
+fi
 
 dotnet ../../tools/ReferenceAssemblyResolver/ReferenceAssemblyResolver.dll --assembly "${ASSETS_FOLDER_DOTNET_PATH}/Game.dll"  --output  ${ASSETS_FOLDER_DOTNET_IOS_PATH}  --search "${URHO3D_DLL_PATH},${MONO_PATH},${MONO_PATH}/Facades"
 
@@ -284,5 +298,11 @@ ${URHO3D_HOME}/script/cmake_ios_dotnet.sh ${BUILD_DIR} -DDEVELOPMENT_TEAM=${DEVE
 
 xcodebuild -project ${BUILD_DIR}/${APP_NAME}.xcodeproj
 
-ios-deploy --justlaunch --bundle  ${BUILD_DIR}/bin/${APP_NAME}.app
+mkdir -p ${URHO3D_HOME}/../output/IOS
+
+cp -R ${BUILD_DIR}/bin/${APP_NAME}.app  ${URHO3D_HOME}/../output/IOS
+
+if [[ "$DEPLOY" == "launch" ]]; then
+    ios-deploy --justlaunch --bundle  ${BUILD_DIR}/bin/${APP_NAME}.app
+fi
 

@@ -118,6 +118,7 @@ currPwd=`pwd`
 projPath=`cd $projPath; pwd`
 `cd $currPwd`
 
+cp "-r" "template/script" "$projPath"
 
 cp "-r" "template/Android" "$projPath"
 mkdir "-p" "$projPath/Android/app/src/main/${java_package_path}"
