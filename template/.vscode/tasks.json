@@ -57,7 +57,7 @@
             "label": "android-build-debug",
             "command": "./script/build-android-debug.sh",
             "windows":{
-                "command": "call ./tools/bash/git-bash.exe script/build-android-debug.sh"
+                "command": "call \"tools/bash/git-bash.exe\" script/build-android-debug.sh"
             },
             "type": "shell",
             "problemMatcher": []
@@ -66,7 +66,7 @@
             "label": "android-build-release",
             "command": "./script/build-android-release.sh",
             "windows":{
-                "command": "call ./tools/bash/git-bash.exe script/build-android-release.sh"
+                "command": "call \"tools/bash/git-bash.exe\" script/build-android-release.sh"
             },
             "type": "shell",
             "problemMatcher": []
