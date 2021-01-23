@@ -21,8 +21,35 @@
 # THE SOFTWARE.
 #
 
-cd Android
-./gradlew dotnetDebug
-cd ..
-mkdir -p output/Android
-cp Android/app/build/outputs/apk/debug/app-debug.apk output/Android
+ANDROID_APP_UUID=TEMPLATE_UUID
+
+while getopts b:d: option
+do
+case "${option}"
+in
+b) BUILD=${OPTARG};;
+d) DEPLOY=${OPTARG};;
+esac
+done
+
+if [[ "$BUILD" == "debug" ]]; then
+    cd Android
+    ./gradlew dotnetDebug
+    cd ..
+    mkdir -p output/Android
+    cp Android/app/build/outputs/apk/debug/app-debug.apk output/Android
+    if [[ "$DEPLOY" == "1" ]]; then
+        adb shell am force-stop ${ANDROID_APP_UUID}
+        adb install -r output/Android/app-debug.apk
+        adb shell am start -n ${ANDROID_APP_UUID}/.MainActivity
+    fi
+elif [[ "$BUILD" == "release" ]]; then
+    cd Android
+    ./gradlew dotnetRelease
+    cd ..
+    mkdir -p output/Android
+    cp Android/app/build/outputs/apk/release/app-release-unsigned.apk output/Android
+fi
+
+
+

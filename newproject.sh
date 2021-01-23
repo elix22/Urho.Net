@@ -132,6 +132,7 @@ mv "$projPath/Android/app/src/main/UrhoStartActivity.kt" "$projPath/Android/app/
 mv "$projPath/Android/app/src/androidTest/ExampleInstrumentedTest.kt" "$projPath/Android/app/src/androidTest/${java_package_path}"
 mv "$projPath/Android/app/src/test/ExampleUnitTest.kt" "$projPath/Android/app/src/test/${java_package_path}"
 
+aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/script/build-android.sh"
 aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/Android/app/src/main/AndroidManifest.xml"
 aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/Android/app/build.gradle"
 aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/Android/app/src/main/${java_package_path}/MainActivity.kt"
