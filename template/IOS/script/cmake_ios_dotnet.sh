@@ -21,6 +21,6 @@
 # THE SOFTWARE.
 #
 
-$(dirname $0)/cmake_generic.sh "$@" -DIPHONEOS_DEPLOYMENT_TARGET=13.2 -DURHO3D_DOTNET=1 -DURHO3D_LUA=0 -DURHO3D_ANGELSCRIPT=0 -G Xcode -DIOS=1
+$(dirname $0)/cmake_generic.sh "$@" -DIPHONEOS_DEPLOYMENT_TARGET=12.4 -DURHO3D_DOTNET=1 -DURHO3D_LUA=0 -DURHO3D_ANGELSCRIPT=0 -G Xcode -DIOS=1
 
 # vi: set ts=4 sw=4 expandtab:

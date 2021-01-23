@@ -169,14 +169,22 @@ if [[ "$RENDERING_BACKEND" == "metal" ]]; then
     cp ${URHO3D_LIB_METAL_PATH}/libUrho3D.a ${URHO3D_HOME}/lib   
 fi
 
-if [[ "$DEVELOPMENT_TEAM" != "" ]]; then
-echo "$DEVELOPMENT_TEAM not empty" 
+if [[ "$DEVELOPMENT_TEAM" != "" && "$DEVELOPMENT_TEAM" != " " ]]; then
+    echo "$DEVELOPMENT_TEAM not empty" 
+    DEVELOPMENT_TEAM=$(echo "$DEVELOPMENT_TEAM" | tr -d ' ')
     mkdir -p ${BUILD_DIR}  
     cp ./script/ios_env_vars.sh ${BUILD_DIR}
     aliassedinplace "s*T_DEVELOPMENT_TEAM*$DEVELOPMENT_TEAM*g" "${BUILD_DIR}/ios_env_vars.sh"
     aliassedinplace "s*T_CODE_SIGN_IDENTITY*""*g" "${BUILD_DIR}/ios_env_vars.sh"
     aliassedinplace "s*T_PROVISIONING_PROFILE_SPECIFIER*""*g" "${BUILD_DIR}/ios_env_vars.sh"
      . ${BUILD_DIR}/ios_env_vars.sh
+elif [[ "$DEVELOPMENT_TEAM" == " " ]]; then
+        if [ -f ${BUILD_DIR}/ios_env_vars.sh ]; then
+            echo "ios_env_vars.sh exist"
+        else
+            echo "ERROR : developer id was not provided , exit "
+            exit -1
+        fi
 fi
 
 #Configure Rendereing backend either GLES or Metal 

@@ -118,6 +118,8 @@ currPwd=`pwd`
 projPath=`cd $projPath; pwd`
 `cd $currPwd`
 
+cp "-r" "template/.vscode" "$projPath"
+
 cp "-r" "template/script" "$projPath"
 
 cp "-r" "template/Android" "$projPath"
@@ -179,4 +181,5 @@ echo "Successful creation"
 echo "Project name : '$projName'"
 echo "Unique identifier : '$uuid'"
 echo "Project path : '$projPath'"
-#echo ${java_package_path}
+
+code $projPath
