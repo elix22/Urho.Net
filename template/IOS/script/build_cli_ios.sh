@@ -327,9 +327,6 @@ ${URHO3D_HOME}/script/cmake_ios_dotnet.sh ${BUILD_DIR} -DDEVELOPMENT_TEAM=${DEVE
 
 xcodebuild -project ${BUILD_DIR}/${APP_NAME}.xcodeproj
 
-mkdir -p ${URHO3D_HOME}/../output/IOS
-
-cp -R ${BUILD_DIR}/bin/${APP_NAME}.app  ${URHO3D_HOME}/../output/IOS
 
 if [[ "$DEPLOY" == "launch" ]]; then
     ios-deploy --justlaunch --bundle  ${BUILD_DIR}/bin/${APP_NAME}.app
