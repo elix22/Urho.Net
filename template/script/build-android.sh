@@ -47,6 +47,7 @@ if [[ "$BUILD" == "debug" ]]; then
     cp Android/app/build/outputs/apk/debug/app-debug.apk output/Android
     if [[ "$DEPLOY" == "1" ]]; then
         adb shell am force-stop ${ANDROID_APP_UUID}
+        adb uninstall ${ANDROID_APP_UUID}
         adb install -r output/Android/app-debug.apk
         adb shell am start -n ${ANDROID_APP_UUID}/.MainActivity
     fi
@@ -60,6 +61,7 @@ elif [[ "$BUILD" == "release" ]]; then
     ./script/apk-sign.sh "-k "${KEY_STORE}"" "-i output/Android"  "-o output/Android"
     if [[ "$DEPLOY" == "1" ]]; then
         adb shell am force-stop ${ANDROID_APP_UUID}
+        adb uninstall ${ANDROID_APP_UUID}
         adb install -r output/Android/app-release-signed.apk
         adb shell am start -n ${ANDROID_APP_UUID}/.MainActivity
     fi
@@ -67,5 +69,6 @@ fi
 
 cd ${CWD}
 
+#read -p "getk: " getk
 
 

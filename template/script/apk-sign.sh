@@ -35,6 +35,10 @@ n) APK_NAME=${OPTARG};;
 esac
 done
 
+KEY_STORE=$(echo "$KEY_STORE" | tr -d ' ')
+if [[ "${KEY_STORE}" == "." ]]; then 
+    KEY_STORE=""
+fi
 
 CWD=$(pwd)
 KEY_STORE_PATH_INFO=${CWD}/keystore_path.txt
@@ -47,12 +51,22 @@ else
     exit 1
 fi
 
+
+
 path_to_executable=$(which apksigner)
 if [ -x "$path_to_executable" ]; then
     echo "found apksigner: $path_to_executable"
+    APK_SIGNER=apksigner
 else
     echo "No apksigner in path. usually this can be found in ANDROID-SDK/build-tools/[....]/apksigner"
-    exit 1
+    path_to_executable=$(which jarsigner)
+    if [ -x "$path_to_executable" ]; then
+        echo "found jarsigner: $path_to_executable"
+        JAR_SIGNER=jarsigner
+    else
+        echo "No jarsigner in path. usually this can be found in JDK/bin/jarsigner"
+        exit 1
+    fi
 fi
 
 generate_keystore()
@@ -64,7 +78,7 @@ generate_keystore()
         echo "No keytool in path. usually this can be found in /usr/bin/keytool"
         exit 1
     fi  
-    echo "Enter your keystore path."
+    echo "Enter path for output generated keystore."
     read -p "keystore path: " key_store_path
     if [[ "$key_store_path" == "" ]]; then
         echo
@@ -84,10 +98,13 @@ generate_keystore()
 
 check_keystore_path_info()
 {
-    if [ -f ${KEY_STORE_PATH_INFO} ]; then 
-        KEY_STORE=$(cat ${KEY_STORE_PATH_INFO})
-        if [ -f ${KEY_STORE} ]; then
-            echo "keystore taken from ${KEY_STORE_PATH_INFO} , keystore file is ${KEY_STORE}"
+    if [ -f "${KEY_STORE_PATH_INFO}" ]; then 
+        TMP_KEY_STORE=$(cat "${KEY_STORE_PATH_INFO}")
+        if [ -f "${TMP_KEY_STORE}" ]; then
+            if [ ! -d "$TMP_KEY_STORE" ]; then
+                echo "keystore taken from ${KEY_STORE_PATH_INFO} , keystore file is ${TMP_KEY_STORE}"
+                KEY_STORE="${TMP_KEY_STORE}"
+            fi
         fi
     fi
 }
@@ -119,9 +136,10 @@ fi
 
 if [[ "$KEY_STORE" == "" || "$KEY_STORE" == " " ]]; then 
     check_keystore_path_info
-    if [ ! -f ${KEY_STORE} ]; then
+    if [ ! -f "${KEY_STORE}" ]; then
         KEY_STORE=${CWD}/android-release-key.jks
-        if [ -f ${KEY_STORE} ]; then
+        echo "searching keystore in ${KEY_STORE}"
+        if [ -f "${KEY_STORE}" ]; then
             echo "keystore path was not specified , using ${KEY_STORE}"
         else 
             echo "keystore was not found generate"
@@ -130,7 +148,8 @@ if [[ "$KEY_STORE" == "" || "$KEY_STORE" == " " ]]; then
     fi
 fi
 
-if [ ! -f ${KEY_STORE} ]; then
+
+if [ ! -f "${KEY_STORE}" ]; then
     check_keystore_path_info
     if [ ! -f ${KEY_STORE} ]; then
         echo "keystore was not found generate"
@@ -138,6 +157,7 @@ if [ ! -f ${KEY_STORE} ]; then
     fi
 fi
 
+echo "KEY_STORE=${KEY_STORE}"
 
 # always create a new KEY_STORE_PATH_INFO , overwrite older path
 if [ -f ${KEY_STORE} ]; then 
@@ -146,7 +166,6 @@ if [ -f ${KEY_STORE} ]; then
     touch ${KEY_STORE_PATH_INFO}
     echo ${KEY_STORE} > ${KEY_STORE_PATH_INFO}
 fi
-
 
 filename=$(basename -- "${APK_INPUT_PATH}/${APK_NAME}" .apk)
 filename_with_ext=$(basename -- "${APK_INPUT_PATH}/${APK_NAME}")
@@ -157,5 +176,12 @@ out_file_name=$(echo ${filename} | sed 's/unsigned//g' | sed 's/--/-/g' | sed 's
 out_file_name=${out_file_name}-signed.apk
 out_file_name=$(echo ${out_file_name} |  sed 's/--/-/g' | sed 's/\-\././g')
 rm -f ${APK_OUTPUT_PATH}/${out_file_name}
-apksigner sign --ks ${KEY_STORE} --ks-pass pass:Android --out ${APK_OUTPUT_PATH}/${out_file_name} ${APK_OUTPUT_PATH}/${filename}-aligned.apk
+
+
+if [ -n "$APK_SIGNER" ]; then
+    ${APK_SIGNER} sign --ks ${KEY_STORE} --ks-pass pass:Android --out ${APK_OUTPUT_PATH}/${out_file_name} ${APK_OUTPUT_PATH}/${filename}-aligned.apk
+elif [ -n "$JAR_SIGNER" ]; then
+    ${JAR_SIGNER}  -keystore ${KEY_STORE} -storepass Android ${APK_OUTPUT_PATH}/${filename}-aligned.apk -signedjar ${APK_OUTPUT_PATH}/${out_file_name} my-alias
+fi
+
 rm ${APK_OUTPUT_PATH}/${filename}-aligned.apk

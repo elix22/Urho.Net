@@ -158,7 +158,7 @@
             "type": "promptString",
             "id": "keystore",
             "description": "keystore file path including file name",
-            "default": " "
+            "default": "."
         }
     ]
 }
