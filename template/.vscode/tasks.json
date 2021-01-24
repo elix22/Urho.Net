@@ -86,7 +86,22 @@
             },
             "type": "shell",
             "args": [
-                "-b","release"
+                "-b","release",
+                "-k","${input:keystore}",
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "android-deploy-release",
+            "command": "./script/build-android.sh",
+            "windows":{
+                "command": "call \"tools/bash/git-bash.exe\" script/build-android.sh"
+            },
+            "type": "shell",
+            "args": [
+                "-b","release",
+                "-k","${input:keystore}",
+                "-d","1"
             ],
             "problemMatcher": []
         },
@@ -137,6 +152,12 @@
             "type": "promptString",
             "id": "DeveloperID",
             "description": "iOS developer team id",
+            "default": " "
+        },
+        {
+            "type": "promptString",
+            "id": "keystore",
+            "description": "keystore file path including file name",
             "default": " "
         }
     ]

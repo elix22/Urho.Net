@@ -23,14 +23,21 @@
 
 ANDROID_APP_UUID=TEMPLATE_UUID
 
-while getopts b:d: option
+while getopts b:d:g:k:i:o:n: option
 do
 case "${option}"
 in
 b) BUILD=${OPTARG};;
 d) DEPLOY=${OPTARG};;
+g) GENERATE_KEY=${OPTARG};;
+k) KEY_STORE=${OPTARG};;
+i) APK_INPUT_PATH=${OPTARG};;
+o) APK_OUTPUT_PATH=${OPTARG};;
+n) APK_NAME=${OPTARG};;
 esac
 done
+
+CWD=$(pwd)
 
 if [[ "$BUILD" == "debug" ]]; then
     cd Android
@@ -49,7 +56,16 @@ elif [[ "$BUILD" == "release" ]]; then
     cd ..
     mkdir -p output/Android
     cp Android/app/build/outputs/apk/release/app-release-unsigned.apk output/Android
+    KEY_STORE=$(echo "$KEY_STORE" | tr -d ' ')
+    ./script/apk-sign.sh "-k "${KEY_STORE}"" "-i output/Android"  "-o output/Android"
+    if [[ "$DEPLOY" == "1" ]]; then
+        adb shell am force-stop ${ANDROID_APP_UUID}
+        adb install -r output/Android/app-release-signed.apk
+        adb shell am start -n ${ANDROID_APP_UUID}/.MainActivity
+    fi
 fi
+
+cd ${CWD}
 
 
 
