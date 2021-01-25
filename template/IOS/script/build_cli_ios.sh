@@ -22,7 +22,7 @@
 #
 
 export URHO3D_HOME=$(pwd)
-export MONO_PATH=${URHO3D_HOME}/../libs/dotnet/bcl/ios
+export LOCAL_MONO_PATH=${URHO3D_HOME}/../libs/dotnet/bcl/ios
 export URHO3D_DLL_PATH=${URHO3D_HOME}/../libs/dotnet/urho/mobile/ios
 export URHO3D_LIB_GLES_PATH=${URHO3D_HOME}/../libs/ios/urho3d/gles
 export URHO3D_LIB_METAL_PATH=${URHO3D_HOME}/../libs/ios/urho3d/metal
@@ -245,7 +245,7 @@ else
     exit -1
 fi
 
-dotnet ../../tools/ReferenceAssemblyResolver/ReferenceAssemblyResolver.dll --assembly "${ASSETS_FOLDER_DOTNET_PATH}/Game.dll"  --output  ${ASSETS_FOLDER_DOTNET_IOS_PATH}  --search "${URHO3D_DLL_PATH},${MONO_PATH},${MONO_PATH}/Facades"
+dotnet ../../tools/ReferenceAssemblyResolver/ReferenceAssemblyResolver.dll --assembly "${ASSETS_FOLDER_DOTNET_PATH}/Game.dll"  --output  ${ASSETS_FOLDER_DOTNET_IOS_PATH}  --search "${URHO3D_DLL_PATH},${LOCAL_MONO_PATH},${LOCAL_MONO_PATH}/Facades"
 
 
 # AOT compile all relevent assemblies
