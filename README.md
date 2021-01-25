@@ -13,9 +13,9 @@ First class Visual Studio Code support as the main IDE on all 3 major platofrms 
   https://dotnet.microsoft.com/download/dotnet-core/3.1
 
 - **C# for Visual Studio Code (powered by OmniSharp)**.\
-  https://channel9.msdn.com/Blogs/dotnet/Get-started-VSCode-Csharp-NET-Core-Windows
-  https://www.youtube.com/watch?v=WeTesTCzep0\
-  https://www.youtube.com/watch?v=LXxjCNfd5b4
+  - https://channel9.msdn.com/Blogs/dotnet/Get-started-VSCode-Csharp-NET-Core-Windows
+  - https://www.youtube.com/watch?v=WeTesTCzep0
+  - https://www.youtube.com/watch?v=LXxjCNfd5b4
 
 # <u> iOS Dependencies </u>
 - XCode
