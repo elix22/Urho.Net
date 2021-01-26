@@ -39,11 +39,11 @@ https://github.com/elix22/Urho.Net-Samples
 
 ## <u> Urho.Net uses the following third-party libraries: </u>
 
-- Urho3D game engine  , modified version 
+- Urho3D game engine  , modified version \
   https://github.com/elix22/Urho3D/tree/dotnet
 
-- UrhoSharp , modified version, mainly using the C# binding tools , decoupling dependency on Xamarin.
+- UrhoSharp , modified version, mainly using the C# binding tools , decoupling dependency on Xamarin.\
   https://github.com/elix22/urho/tree/elix22-master
 
-- ReferenceAssemblyResolver , written from scratch, tool that resolves all the reference assembly dependencies that are part of the main Game.dll 
+- ReferenceAssemblyResolver , written from scratch, tool that resolves all the reference assembly dependencies that are part of the main Game.dll\
   https://github.com/elix22/ReferenceAssemblyResolver
