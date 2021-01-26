@@ -1,5 +1,6 @@
 # Urho.Net
 Multiplatform C# Game development framework based upon the Urho3D game engine .
+Xamarin SharpieBinder is used to generate the C# <-> native bindings .
 
 Currently supports :  Windows , Linux , OSX , iOS and Android . 
 
@@ -18,6 +19,7 @@ First class Visual Studio Code support as the main IDE on all 3 major platofrms 
   - https://www.youtube.com/watch?v=LXxjCNfd5b4
 
 # <u> iOS Dependencies </u>
+- CMake
 - XCode
 - Valid Apple devleoper account
 - Mono SDK \
