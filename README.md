@@ -4,7 +4,7 @@ Xamarin SharpieBinder is used to generate the C# <-> native bindings .
 
 Currently supports :  Windows , Linux , OSX , iOS and Android . 
 
-First class Visual Studio Code support as the main IDE on all 3 major platofrms , Windows , OSX and Linux .
+First class Visual Studio Code support as the main IDE on all 3 major platforms , Windows , OSX and Linux .
 
 # <u> Common Dependencies </u>
 - **Visual Studio Code** \
@@ -28,6 +28,11 @@ First class Visual Studio Code support as the main IDE on all 3 major platofrms 
 
 # <u> Android Dependencies </u>
 - Android SDK https://developer.android.com/studio
+
+# <u> Getting Started </u>
+- https://youtu.be/HNLlSol32TI
+- https://youtu.be/6YZC6N9cIGk
+- https://youtu.be/ElMs_jkcLxo
 
 # Samples 
 https://github.com/elix22/Urho.Net-Samples
