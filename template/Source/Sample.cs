@@ -235,7 +235,7 @@ namespace TEMPLATE_PROJECT_NAME
 		{
 			var icon = cache.GetImage("Textures/UrhoIcon.png");
 			Graphics.SetWindowIcon(icon);
-			Graphics.WindowTitle = "Urho.Net Sample";
+			Graphics.WindowTitle = "TEMPLATE_PROJECT_NAME";
 		}
 
 		void CreateConsoleAndDebugHud()
