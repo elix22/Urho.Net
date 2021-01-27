@@ -98,6 +98,9 @@
   </ItemGroup>
 
 
+  <Target Name="CustomBeforeBuild" BeforeTargets="BeforeBuild" >
+    <Delete Files="Android/app/src/main/assets/Data/DotNet/Game.dll" />
+  </Target>
 
   <Target Name="CopyCustomContentWindows" AfterTargets="AfterBuild" Condition="'$(IsWindows)'=='true'">
     <Copy SourceFiles="@(AssetsSourceFiles)" DestinationFolder="$(OutDir)\%(RecursiveDir)" SkipUnchangedFiles="true" Retries="3" RetryDelayMilliseconds="300" />

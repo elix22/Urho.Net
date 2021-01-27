@@ -75,6 +75,7 @@ task dotnetResolveReferences {
     mustRunAfter("dotnetBuildDebug",'dotnetBuildRelease')
     exec {
         println "I'm dotnetResolveReferences task!"
+        assert file("./src/main/assets/Data/DotNet/Game.dll").exists() 
         commandLine 'dotnet','../../tools/ReferenceAssemblyResolver/ReferenceAssemblyResolver.dll','--assembly','./src/main/assets/Data/DotNet/Game.dll' , '--output', 'src/main/assets/Data/DotNet/android' , '--search' , '../../libs/dotnet/urho/mobile/android,../../libs/dotnet/bcl/android,../../libs/dotnet/bcl/android/Facades'
     }
     
