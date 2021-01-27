@@ -21,7 +21,7 @@ First class Visual Studio Code support as the main IDE on all 3 major platforms 
 # <u> iOS Dependencies </u>
 - CMake
 - XCode
-- Valid Apple devleoper account
+- Valid Apple developer account
 - Mono SDK \
   https://www.mono-project.com/download/stable/
 - ios-deploy , `brew install ios-deploy`
