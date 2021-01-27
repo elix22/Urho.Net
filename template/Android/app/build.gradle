@@ -45,6 +45,10 @@ task copyAssets(type: Copy) {
     into "src/main/assets"
 }
 
+task deleteIOSFolder(type: Delete) {
+  delete 'src/main/assets/Data/DotNet/ios'
+}
+
 task copyDotNetAssets(type: Copy) {
     println "I'm copyDotNetAssets task!"
     from("../../libs/dotnet/urho/mobile") {
@@ -83,12 +87,12 @@ task dotnetResolveReferences {
 
 task dotnetDebug {
     println "I'm dotnetDebug task!"
-    mustRunAfter("copyAssets",'copyDotNetAssets','dotnetBuildDebug','dotnetResolveReferences')
-    dependsOn('copyAssets','copyDotNetAssets','dotnetBuildDebug','dotnetResolveReferences','assembleDebug')
+    mustRunAfter("copyAssets",'deleteIOSFolder','copyDotNetAssets','dotnetBuildDebug','dotnetResolveReferences')
+    dependsOn('copyAssets','deleteIOSFolder','copyDotNetAssets','dotnetBuildDebug','dotnetResolveReferences','assembleDebug')
 }
 
 task dotnetRelease {
     println "I'm dotnetRelease task!"
-    mustRunAfter("copyAssets",'copyDotNetAssets','dotnetBuildRelease','dotnetResolveReferences')
-    dependsOn('copyAssets','copyDotNetAssets','dotnetBuildRelease','dotnetResolveReferences','assembleRelease')
+    mustRunAfter("copyAssets",'deleteIOSFolder','copyDotNetAssets','dotnetBuildRelease','dotnetResolveReferences')
+    dependsOn('copyAssets','deleteIOSFolder','copyDotNetAssets','dotnetBuildRelease','dotnetResolveReferences','assembleRelease')
 }
