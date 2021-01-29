@@ -118,9 +118,20 @@ currPwd=`pwd`
 projPath=`cd $projPath; pwd`
 `cd $currPwd`
 
+
+if [ ! -n "$URHONET_HOME_ROOT" ]; then
+	echo  "URHONET_HOME_ROOT not set , setting "
+	. set_urhonet_home.sh
+else
+	echo  "URHONET_HOME_ROOT=$URHONET_HOME_ROOT"
+fi
+
 cp "-r" "template/.vscode" "$projPath"
 
 cp "-r" "template/script" "$projPath"
+
+aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/script/project_vars.sh"
+aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/script/project_vars.sh"
 
 cp "-r" "template/Android" "$projPath"
 mkdir "-p" "$projPath/Android/app/src/main/${java_package_path}"
