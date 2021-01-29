@@ -174,6 +174,8 @@ cp "-r" "template/Assets" "$projPath"
 cp "-r" "template/include" "$projPath"
 
 cp "-r" "template/libs" "$projPath"
+rm "-rf" "$projPath/libs/ios"
+
 cp "-r" "template/Source" "$projPath"
 mv "$projPath/Source/template.cs" "$projPath/Source/${projName}.cs" 
 

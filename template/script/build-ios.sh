@@ -46,7 +46,11 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
             cd bin
             ln -s  ../../Assets/* .
             cd $currPwd
-        fi  
+        fi 
+
+        if [ ! -d libs/ios ] ; then 
+            cp -R ${URHONET_HOME_ROOT}/template/libs/ios libs
+        fi 
     fi
     cd IOS
     ./script/build_cli_ios.sh "$@"
