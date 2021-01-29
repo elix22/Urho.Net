@@ -39,6 +39,16 @@ done
 
 CWD=$(pwd)
 
+if [ ! -n "$URHONET_HOME_ROOT" ]; then
+	echo  "URHONET_HOME_ROOT path not set , set it by going to the Urho.Net folder installation and invoking set_urhonet_home.sh (on windows set_urhonet_home.bat )  "
+	exit -1
+else
+	echo  "URHONET_HOME_ROOT=$URHONET_HOME_ROOT"
+    if [ ! -d Android/app/src/main/jniLibs ] ; then
+        cp -R ${URHONET_HOME_ROOT}/template/Android/app/src/main/jniLibs Android/app/src/main
+    fi
+fi
+
 if [[ "$BUILD" == "debug" ]]; then
     cd Android
     ./gradlew dotnetDebug

@@ -134,6 +134,9 @@ aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/script/project_vars.sh"
 aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/script/project_vars.sh"
 
 cp "-r" "template/Android" "$projPath"
+
+rm "-rf" "$projPath/Android/app/src/main/jniLibs"
+
 mkdir "-p" "$projPath/Android/app/src/main/${java_package_path}"
 mkdir "-p" "$projPath/Android/app/src/androidTest/${java_package_path}"
 mkdir "-p" "$projPath/Android/app/src/test/${java_package_path}"
