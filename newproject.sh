@@ -177,7 +177,7 @@ cp "template/template.csproj" "$projPath/$projName.csproj"
 
 mkdir "-p" "$projPath/tools"
 cp "-r" "tools/ReferenceAssemblyResolver" "$projPath/tools"
-cp "-r" "tools/bash" "$projPath/tools"
+cp "-R" "tools/bash_mini/." "$projPath/tools/bash"
 
 echo "Successful creation"
 echo "Project name : '$projName'"
