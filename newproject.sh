@@ -27,6 +27,25 @@ else
 	alias aliassedinplace='sed -i""'
 fi
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+        if [ -f ~/.bash_profile ]; then
+            echo "sourcing .bash_profile "
+        	. ~/.bash_profile
+        fi	
+else
+        if [ -f ~/.bashrc ]; then
+            echo "sourcing .bashrc"
+			. ~/.bashrc
+		fi
+fi
+
+if [ ! -n "$URHONET_HOME_ROOT" ]; then
+	echo  "URHONET_HOME_ROOT not set , setting "
+	. set_urhonet_home.sh
+else
+	echo  "URHONET_HOME_ROOT=$URHONET_HOME_ROOT"
+fi
+
 echo
 echo "1. Enter a name for the new project."
 echo
@@ -119,13 +138,6 @@ projPath=`cd $projPath; pwd`
 `cd $currPwd`
 
 
-if [ ! -n "$URHONET_HOME_ROOT" ]; then
-	echo  "URHONET_HOME_ROOT not set , setting "
-	. set_urhonet_home.sh
-else
-	echo  "URHONET_HOME_ROOT=$URHONET_HOME_ROOT"
-fi
-
 cp "-r" "template/.vscode" "$projPath"
 
 cp "-r" "template/script" "$projPath"
@@ -160,18 +172,6 @@ aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/Android/app/src
 
 cp "-r" "template/Assets" "$projPath"
 cp "-r" "template/include" "$projPath"
-
-cp "-r" "template/IOS" "$projPath"
-aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/IOS/CMakeLists.txt"
-aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/IOS/script/build_cli_ios.sh"
-aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/IOS/script/build_cli_ios.sh"
-
-currPwd=`pwd`
-cd $projPath/IOS
-mkdir bin
-cd bin
-ln -s  ../../Assets/* .
-cd $currPwd
 
 cp "-r" "template/libs" "$projPath"
 cp "-r" "template/Source" "$projPath"

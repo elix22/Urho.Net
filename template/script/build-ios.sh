@@ -20,6 +20,38 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-cd IOS
-./script/build_cli_ios.sh "$@"
-cd ..
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    if [ -f ~/.bash_profile ]; then
+        echo "sourcing .bash_profile "
+        . ~/.bash_profile
+    fi
+    if [ ! -n "$URHONET_HOME_ROOT" ]; then
+        echo  "ERROR !!  URHONET_HOME_ROOT path not set , set it by going to the Urho.Net folder installation and invoking set_urhonet_home.sh "
+        exit -1
+    else
+        echo "URHONET_HOME_ROOT=${URHONET_HOME_ROOT}"
+        if [ ! -d IOS ] ; then 
+            echo "copying IOS folder"
+
+            . script/project_vars.sh
+            cp -R ${URHONET_HOME_ROOT}/template/IOS .
+
+            sed -i ""  "s*TEMPLATE_PROJECT_NAME*$PROJECT_NAME*g" "IOS/CMakeLists.txt"
+            sed -i ""  "s*TEMPLATE_PROJECT_NAME*$PROJECT_NAME*g" "IOS/script/build_cli_ios.sh"
+            sed -i ""  "s*TEMPLATE_UUID*$PROJECT_UUID*g" "IOS/script/build_cli_ios.sh"
+
+            currPwd=`pwd`
+            cd IOS
+            mkdir bin
+            cd bin
+            ln -s  ../../Assets/* .
+            cd $currPwd
+        fi  
+    fi
+    cd IOS
+    ./script/build_cli_ios.sh "$@"
+    cd ..
+else
+	echo  "not an Apple platform , can't run"
+	exit -1
+fi

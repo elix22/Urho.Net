@@ -46,6 +46,13 @@ export UUID='TEMPLATE_UUID'
 export APP_NAME='TEMPLATE_PROJECT_NAME' 
 export LOWER_APP_NAME=$(echo ${APP_NAME} |  tr 'A-Z' 'a-z')
 
+if [ ! -n "$URHONET_HOME_ROOT" ]; then
+	echo  "ERROR !! , URHONET_HOME_ROOT path not set , set it by going to the Urho.Net folder installation and invoking set_urhonet_home.sh "
+	exit -1
+else
+    echo "URHONET_HOME_ROOT=${URHONET_HOME_ROOT}"
+fi
+
 while getopts d:r:t: option
 do
 case "${option}"

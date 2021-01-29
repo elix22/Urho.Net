@@ -1,6 +1,6 @@
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         echo "$OSTYPE"
-        if [  ~/.bashrc ]; then
+        if [ -f  ~/.bashrc ]; then
             echo ".bashrc exist"
         else
             echo ".bashrc does not exist , creating"
@@ -11,7 +11,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         echo "registered environment variable URHONET_HOME_ROOT=${URHONET_HOME_ROOT}"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
         echo "$OSTYPE"
-        if [  ~/.bash_profile ]; then
+        if [ -f  ~/.bash_profile ]; then
             echo ".bash_profile exist"
         else
             echo ".bash_profile does not exist , creating"
@@ -31,7 +31,7 @@ elif [[ "$OSTYPE" == "msys" ]]; then
         echo "registered environment variable URHONET_HOME_ROOT=$(pwd)"
 elif [[ "$OSTYPE" == "freebsd"* ]]; then
         echo "$OSTYPE"
-        if [  ~/.bashrc ]; then
+        if [ -f  ~/.bashrc ]; then
             echo ".bashrc exist"
         else
             echo ".bashrc does not exist , creating"
@@ -44,4 +44,4 @@ else
        echo "$OSTYPE"
 fi
 
-read -p "getk: " getk
+#read -p "getk: " getk

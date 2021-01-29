@@ -39,6 +39,18 @@ done
 
 CWD=$(pwd)
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+        if [ -f ~/.bash_profile ]; then
+            echo "sourcing .bash_profile "
+        	. ~/.bash_profile
+        fi	
+else
+        if [ -f ~/.bashrc ]; then
+            echo "sourcing .bashrc"
+			. ~/.bashrc
+		fi
+fi
+
 if [ ! -n "$URHONET_HOME_ROOT" ]; then
 	echo  "URHONET_HOME_ROOT path not set , set it by going to the Urho.Net folder installation and invoking set_urhonet_home.sh (on windows set_urhonet_home.bat )  "
 	exit -1
