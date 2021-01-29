@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 
-ANDROID_APP_UUID=TEMPLATE_UUID
+ANDROID_APP_UUID=TEMPLATE_PROJECT_UUID
 
 while getopts b:d:g:k:i:o:n: option
 do
@@ -38,6 +38,17 @@ esac
 done
 
 CWD=$(pwd)
+unamestr=$(uname)
+# Switch-on alias expansion within the script 
+shopt -s expand_aliases
+
+#Alias the sed in-place command for OSX and Linux - incompatibilities between BSD and Linux sed args
+if [[ "$unamestr" == "Darwin" ]]; then
+	alias aliassedinplace='sed -i ""'
+else
+	#For Linux, notice no space after the '-i' 
+	alias aliassedinplace='sed -i""'
+fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
         if [ -f ~/.bash_profile ]; then
@@ -56,9 +67,32 @@ if [ ! -n "$URHONET_HOME_ROOT" ]; then
 	exit -1
 else
 	echo  "URHONET_HOME_ROOT=$URHONET_HOME_ROOT"
-    if [ ! -d Android/app/src/main/jniLibs ] ; then
-        cp -R ${URHONET_HOME_ROOT}/template/Android/app/src/main/jniLibs Android/app/src/main
+    if [ ! -d Android ] ; then
+
+        . script/project_vars.sh
+
+        cp "-r" "${URHONET_HOME_ROOT}/template/Android" .
+        mkdir "-p" "Android/app/src/main/${JAVA_PACKAGE_PATH}"
+        mkdir "-p" "Android/app/src/androidTest/${JAVA_PACKAGE_PATH}"
+        mkdir "-p" "Android/app/src/test/${JAVA_PACKAGE_PATH}"
+
+        mv "Android/app/src/main/MainActivity.kt" "Android/app/src/main/${JAVA_PACKAGE_PATH}"
+        mv "Android/app/src/main/UrhoStartActivity.kt" "Android/app/src/main/${JAVA_PACKAGE_PATH}"
+        mv "Android/app/src/androidTest/ExampleInstrumentedTest.kt" "Android/app/src/androidTest/${JAVA_PACKAGE_PATH}"
+        mv "Android/app/src/test/ExampleUnitTest.kt" "Android/app/src/test/${JAVA_PACKAGE_PATH}"
+
+        aliassedinplace "s*TEMPLATE_UUID*$PROJECT_UUID*g" "Android/app/src/main/AndroidManifest.xml"
+        aliassedinplace "s*TEMPLATE_UUID*$PROJECT_UUID*g" "Android/app/build.gradle"
+        aliassedinplace "s*TEMPLATE_UUID*$PROJECT_UUID*g" "Android/app/src/main/${JAVA_PACKAGE_PATH}/MainActivity.kt"
+        aliassedinplace "s*TEMPLATE_UUID*$PROJECT_UUID*g" "Android/app/src/main/${JAVA_PACKAGE_PATH}/UrhoStartActivity.kt"
+
+        aliassedinplace "s*TEMPLATE_UUID*$PROJECT_UUID*g" "Android/app/src/androidTest/${JAVA_PACKAGE_PATH}/ExampleInstrumentedTest.kt"
+        aliassedinplace "s*TEMPLATE_UUID*$PROJECT_UUID*g" "Android/app/src/test/${JAVA_PACKAGE_PATH}/ExampleUnitTest.kt"
+
+        aliassedinplace "s*TEMPLATE_PROJECT_NAME*$PROJECT_NAME*g" "Android/settings.gradle"
+        aliassedinplace "s*TEMPLATE_PROJECT_NAME*$PROJECT_NAME*g" "Android/app/src/main/res/values/strings.xml"
     fi
+
 fi
 
 if [[ "$BUILD" == "debug" ]]; then

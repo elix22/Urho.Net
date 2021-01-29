@@ -163,33 +163,11 @@ cp "-r" "template/.vscode" "$projPath"
 
 cp "-r" "template/script" "$projPath"
 
-aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/script/project_vars.sh"
+aliassedinplace "s*TEMPLATE_PROJECT_UUID*$uuid*g" "$projPath/script/project_vars.sh"
 aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/script/project_vars.sh"
+aliassedinplace "s*TEMPLATE_JAVA_PACKAGE_PATH*$java_package_path*g" "$projPath/script/project_vars.sh"
 
-cp "-r" "template/Android" "$projPath"
-
-rm "-rf" "$projPath/Android/app/src/main/jniLibs"
-
-mkdir "-p" "$projPath/Android/app/src/main/${java_package_path}"
-mkdir "-p" "$projPath/Android/app/src/androidTest/${java_package_path}"
-mkdir "-p" "$projPath/Android/app/src/test/${java_package_path}"
-
-mv "$projPath/Android/app/src/main/MainActivity.kt" "$projPath/Android/app/src/main/${java_package_path}"
-mv "$projPath/Android/app/src/main/UrhoStartActivity.kt" "$projPath/Android/app/src/main/${java_package_path}"
-mv "$projPath/Android/app/src/androidTest/ExampleInstrumentedTest.kt" "$projPath/Android/app/src/androidTest/${java_package_path}"
-mv "$projPath/Android/app/src/test/ExampleUnitTest.kt" "$projPath/Android/app/src/test/${java_package_path}"
-
-aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/script/build-android.sh"
-aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/Android/app/src/main/AndroidManifest.xml"
-aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/Android/app/build.gradle"
-aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/Android/app/src/main/${java_package_path}/MainActivity.kt"
-aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/Android/app/src/main/${java_package_path}/UrhoStartActivity.kt"
-
-aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/Android/app/src/androidTest/${java_package_path}/ExampleInstrumentedTest.kt"
-aliassedinplace "s*TEMPLATE_UUID*$uuid*g" "$projPath/Android/app/src/test/${java_package_path}/ExampleUnitTest.kt"
-
-aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/Android/settings.gradle"
-aliassedinplace "s*TEMPLATE_PROJECT_NAME*$projName*g" "$projPath/Android/app/src/main/res/values/strings.xml"
+aliassedinplace "s*TEMPLATE_PROJECT_UUID*$uuid*g" "$projPath/script/build-android.sh"
 
 cp "-r" "template/Assets" "$projPath"
 cp "-r" "template/include" "$projPath"
