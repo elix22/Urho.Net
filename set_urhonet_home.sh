@@ -31,7 +31,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         fi
         echo "export URHONET_HOME_ROOT=\"$(pwd)\"" >> ~/.bashrc
         . ~/.bashrc
-        echo "registered environment variable URHONET_HOME_ROOT=${URHONET_HOME_ROOT}"
+        echo "registered environment variable URHONET_HOME_ROOT"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
         echo "$OSTYPE"
         if [ -f  ~/.bash_profile ]; then
@@ -42,7 +42,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
         fi
         echo "export URHONET_HOME_ROOT=\"$(pwd)\"" >> ~/.bash_profile
         . ~/.bash_profile
-        echo "registered environment variable URHONET_HOME_ROOT=${URHONET_HOME_ROOT}"
+        echo "registered environment variable URHONET_HOME_ROOT"
 elif [[ "$OSTYPE" == "cygwin" ]]; then
         echo "$OSTYPE"
         setx URHONET_HOME_ROOT $(pwd)
@@ -51,7 +51,7 @@ elif [[ "$OSTYPE" == "msys" ]]; then
         echo "$OSTYPE"
         setx URHONET_HOME_ROOT $(pwd)
         echo "export URHONET_HOME_ROOT=\"$(pwd)\"" >> ~/.bashrc
-        echo "registered environment variable URHONET_HOME_ROOT=$(pwd)"
+        echo "registered environment variable URHONET_HOME_ROOT"
 elif [[ "$OSTYPE" == "freebsd"* ]]; then
         echo "$OSTYPE"
         if [ -f  ~/.bashrc ]; then
@@ -62,9 +62,12 @@ elif [[ "$OSTYPE" == "freebsd"* ]]; then
         fi
         echo "export URHONET_HOME_ROOT=\"$(pwd)\"" >> ~/.bashrc
         . ~/.bashrc
-        echo "registered environment variable URHONET_HOME_ROOT=${URHONET_HOME_ROOT}"
+       echo "registered environment variable URHONET_HOME_ROOT"
 else
        echo "$OSTYPE"
 fi
 
-#read -p "getk: " getk
+echo 
+echo 
+echo "close this terminal and open a new terminal to start Urho.Net development "
+read -p "" getk
