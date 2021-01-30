@@ -123,4 +123,14 @@
     <Copy SourceFiles="$(OutDir)/Game.dll" DestinationFolder="@(AndroidAssetsDestinationDir)" SkipUnchangedFiles="true" />
   </Target>
 
+  <Target Name = "CustomAfterClean" AfterTargets="AfterClean">
+        <Message Text="Urho.Net clean all" Importance="high" />
+        <RemoveDir Directories="bin" />
+        <RemoveDir Directories="Android" />
+        <RemoveDir Directories="IOS" />
+        <RemoveDir Directories="libs" />
+        <RemoveDir Directories="output" />
+        <RemoveDir Directories="obj" />
+  </Target>
+
 </Project>
