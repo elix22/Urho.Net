@@ -67,7 +67,10 @@ else
        echo "$OSTYPE"
 fi
 
-echo 
-echo 
-echo "close this terminal and open a new terminal to start Urho.Net development "
-read -p "" getk
+if [[ "$OSTYPE" != "msys" ]]; then
+    echo 
+    echo 
+    echo "close this terminal and open a new terminal to start Urho.Net development "
+fi
+
+#read -p "" getk
