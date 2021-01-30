@@ -43,13 +43,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         if [ ! -d libs/dotnet/bcl/ios ] ; then
             verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/libs/dotnet/bcl/ios" 
             mkdir -p libs/dotnet/bcl/ios
-            cp "-R"  ${URHONET_HOME_ROOT}/template/libs/dotnet/bcl/ios/  libs/dotnet/bcl/ios/
+            cp "-r"  ${URHONET_HOME_ROOT}/template/libs/dotnet/bcl/ios/*  libs/dotnet/bcl/ios/
         fi
 
         if [ ! -d libs/dotnet/urho//mobile/ios ] ; then
             verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/ios"
             mkdir -p libs/dotnet/urho//mobile/ios
-            cp "-R"  ${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/ios/  libs/dotnet/urho//mobile/ios/
+            cp "-r"  ${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/ios/*  libs/dotnet/urho//mobile/ios/
         fi
 
         if [ ! -d IOS ] ; then 

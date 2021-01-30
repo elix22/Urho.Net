@@ -79,13 +79,13 @@ else
     if [ ! -d libs/dotnet/bcl/android ] ; then
         verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/libs/dotnet/bcl/android" 
         mkdir -p libs/dotnet/bcl/android
-        cp "-R"  ${URHONET_HOME_ROOT}/template/libs/dotnet/bcl/android/  libs/dotnet/bcl/android/
+        cp "-r"  ${URHONET_HOME_ROOT}/template/libs/dotnet/bcl/android/*  libs/dotnet/bcl/android/
     fi
 
     if [ ! -d libs/dotnet/urho//mobile/android ] ; then
         verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/android" 
         mkdir -p libs/dotnet/urho//mobile/android
-        cp "-R"  ${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/android/  libs/dotnet/urho//mobile/android/
+        cp "-r"  ${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/android/*  libs/dotnet/urho//mobile/android/
     fi
 
     # if [ ! -d Android ] ; then
