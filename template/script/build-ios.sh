@@ -21,6 +21,15 @@
 # THE SOFTWARE.
 #
 if [[ "$OSTYPE" == "darwin"* ]]; then
+
+    verify_dir_exist_or_exit()
+    {
+        if [ ! -d $1 ] ; then
+            echo "$1 not found , are you sure that URHONET_HOME_ROOT=${URHONET_HOME_ROOT} is pointing to the right place ? "
+            exit 1
+        fi
+    }
+
     if [ -f ~/.bash_profile ]; then
         echo "sourcing .bash_profile "
         . ~/.bash_profile
@@ -30,7 +39,21 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         exit -1
     else
         echo "URHONET_HOME_ROOT=${URHONET_HOME_ROOT}"
+
+        if [ ! -d libs/dotnet/bcl/ios ] ; then
+            verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/libs/dotnet/bcl/ios" 
+            mkdir -p libs/dotnet/bcl/ios
+            cp "-R"  ${URHONET_HOME_ROOT}/template/libs/dotnet/bcl/ios/  libs/dotnet/bcl/ios/
+        fi
+
+        if [ ! -d libs/dotnet/urho//mobile/ios ] ; then
+            verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/ios"
+            mkdir -p libs/dotnet/urho//mobile/ios
+            cp "-R"  ${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/ios/  libs/dotnet/urho//mobile/ios/
+        fi
+
         if [ ! -d IOS ] ; then 
+            verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/IOS" 
             echo "copying IOS folder"
 
             . script/project_vars.sh

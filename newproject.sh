@@ -174,6 +174,8 @@ cp "-r" "template/include" "$projPath"
 
 cp "-r" "template/libs" "$projPath"
 rm "-rf" "$projPath/libs/ios"
+rm "-rf" "$projPath/libs/dotnet/bcl"
+rm "-rf" "$projPath/libs/dotnet/urho/mobile"
 
 cp "-r" "template/Source" "$projPath"
 mv "$projPath/Source/template.cs" "$projPath/Source/${projName}.cs" 

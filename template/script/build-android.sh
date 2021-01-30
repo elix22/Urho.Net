@@ -62,13 +62,34 @@ else
 		fi
 fi
 
+verify_dir_exist_or_exit()
+{
+    if [ ! -d $1 ] ; then
+        echo "$1 not found , are you sure that URHONET_HOME_ROOT=${URHONET_HOME_ROOT} is pointing to the right place ? "
+        exit 1
+    fi
+}
+
 if [ ! -n "$URHONET_HOME_ROOT" ]; then
 	echo  "URHONET_HOME_ROOT path not set , set it by going to the Urho.Net folder installation and invoking set_urhonet_home.sh (on windows set_urhonet_home.bat )  "
 	exit -1
 else
 	echo  "URHONET_HOME_ROOT=$URHONET_HOME_ROOT"
-    if [ ! -d Android ] ; then
 
+    if [ ! -d libs/dotnet/bcl/android ] ; then
+        verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/libs/dotnet/bcl/android" 
+        mkdir -p libs/dotnet/bcl/android
+        cp "-R"  ${URHONET_HOME_ROOT}/template/libs/dotnet/bcl/android/  libs/dotnet/bcl/android/
+    fi
+
+    if [ ! -d libs/dotnet/urho//mobile/android ] ; then
+        verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/android" 
+        mkdir -p libs/dotnet/urho//mobile/android
+        cp "-R"  ${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/android/  libs/dotnet/urho//mobile/android/
+    fi
+
+    if [ ! -d Android ] ; then
+        verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/Android" 
         . script/project_vars.sh
 
         cp "-r" "${URHONET_HOME_ROOT}/template/Android" .
