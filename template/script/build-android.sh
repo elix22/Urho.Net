@@ -88,7 +88,7 @@ else
         cp "-R"  ${URHONET_HOME_ROOT}/template/libs/dotnet/urho//mobile/android/  libs/dotnet/urho//mobile/android/
     fi
 
-    if [ ! -d Android ] ; then
+    # if [ ! -d Android ] ; then
         verify_dir_exist_or_exit "${URHONET_HOME_ROOT}/template/Android" 
         . script/project_vars.sh
 
@@ -112,7 +112,7 @@ else
 
         aliassedinplace "s*TEMPLATE_PROJECT_NAME*$PROJECT_NAME*g" "Android/settings.gradle"
         aliassedinplace "s*TEMPLATE_PROJECT_NAME*$PROJECT_NAME*g" "Android/app/src/main/res/values/strings.xml"
-    fi
+    # fi
 
 fi
 
