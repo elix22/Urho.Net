@@ -61,8 +61,12 @@ else
 fi
 
 if [ ! -n "$URHONET_HOME_ROOT" ]; then
+if [[ "$OSTYPE" == "msys" ]]; then
+	. ./set_urhonet_home.sh
+else
 	echo  "URHONET_HOME_ROOT variable was no set , set it by invoking the script set_urhonet_home.sh (set_urhonet_home.bat on Windows) , located in the Urho.Net folder "
 	exit 1
+fi
 else
 	echo  "URHONET_HOME_ROOT=$URHONET_HOME_ROOT"
 fi
