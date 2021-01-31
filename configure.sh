@@ -48,8 +48,12 @@ rm -rf  ~/${URHONET_CONFIG_FOLDER}
 mkdir -p  ~/${URHONET_CONFIG_FOLDER}
 cp template/script/UrhoNetHome.config ~/${URHONET_CONFIG_FOLDER}/
 
-
-aliassedinplace "s*TEMPLATE_URHONET_HOME*$currPwd*g" "$HOME/${URHONET_CONFIG_FOLDER}/UrhoNetHome.config"
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+	currWinPwd=$(cygpath -m ${currPwd})
+	aliassedinplace "s*TEMPLATE_URHONET_HOME*$currWinPwd*g" "$HOME/${URHONET_CONFIG_FOLDER}/UrhoNetHome.config"
+else
+	aliassedinplace "s*TEMPLATE_URHONET_HOME*$currPwd*g" "$HOME/${URHONET_CONFIG_FOLDER}/UrhoNetHome.config"
+fi
 
 if [ -f ~/${URHONET_CONFIG_FOLDER}/urhonethome ]; then
     rm -f ~/${URHONET_CONFIG_FOLDER}/urhonethome
