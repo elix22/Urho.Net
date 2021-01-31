@@ -31,7 +31,7 @@ First class Visual Studio Code support as the main IDE on all 3 major platforms 
 
 # <u> Getting Started </u>
 - General (updated on 31/01/2021)
-  - https://youtu.be/HNLlSol32TI
+  - https://youtu.be/LR4M4RMc1qI
 - iOS development
   - https://youtu.be/6YZC6N9cIGk
 - Android development
