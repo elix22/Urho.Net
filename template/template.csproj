@@ -32,6 +32,15 @@
     <AssetsSourceFiles Include="Assets/**/*.*" />
   </ItemGroup>
   
+  <PropertyGroup>
+    <HomeDir>$(UserProfile)</HomeDir>
+    <HomeDir Condition="'$(HomeDir)' == ''">$(Home)</HomeDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <UrhoNetHome>$(HomeDir)/.urhonet_config/UrhoNetHome.config</UrhoNetHome>
+  </PropertyGroup>
+
 
   <ItemGroup Condition="'$(IsWindows)'=='true' Or '$(IsOSX)'=='true' Or '$(IsLinux)'=='true'">
     <None Remove="Android\**" />
@@ -82,12 +91,6 @@
     <AssetsSourceFiles Remove="Assets\Data\DotNet\ios\System.Core.dll" />
   </ItemGroup>
   
-  <ItemGroup>
-    <Reference Include="UrhoDotNet">
-      <HintPath>$(URHONET_HOME_ROOT)\template\libs\dotnet\urho\desktop\UrhoDotNet.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 
   <ItemGroup>
     <AndroidAssetsDestinationDir Include="Android/app/src/main/assets/Data/DotNet" />
@@ -95,31 +98,52 @@
 
 
   <Target Name="CustomBeforeBuild" BeforeTargets="BeforeBuild" >
-    <Error Condition="! Exists('$(URHONET_HOME_ROOT)')" Text="URHONET_HOME_ROOT not configured , please close the IDE and run set_urhonet_home.sh (set_urhonet_home.bat on Windows) from Urho.Net installation folder " /> 
-    <Message Text="URHONET_HOME_ROOT=$(URHONET_HOME_ROOT)" Importance="high" />
+    <Error Condition="! Exists('$(UrhoNetHome)')" Text="Urho.Net is not configured , please run configure.sh (configure.bat on Windows) from the Urho.Net installation folder " /> 
+    <XmlPeek XmlInputPath="$(UrhoNetHome)" Query="UrhoNetHome/add[@key='UrhoNetHome']/@value">
+        <Output TaskParameter="Result" ItemName="URHONET_HOME_ROOT" />
+    </XmlPeek>
+    <Message Text="URHONET_HOME_ROOT=@(URHONET_HOME_ROOT)" Importance="high" />
+    <ItemGroup>
+      <Reference Include="UrhoDotNet">
+        <HintPath>@(URHONET_HOME_ROOT)\template\libs\dotnet\urho\desktop\UrhoDotNet.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+    <PropertyGroup>
+      <UrhoDotNetDLL>@(URHONET_HOME_ROOT)\template\libs\dotnet\urho\desktop\UrhoDotNet.dll</UrhoDotNetDLL>
+    </PropertyGroup>  
+    <Copy SourceFiles="$(UrhoDotNetDLL)" DestinationFolder="References" ContinueOnError="true" />
     <Delete Files="Android/app/src/main/assets/Data/DotNet/Game.dll" />
   </Target>
 
   <Target Name="CopyCustomContentWindows" AfterTargets="AfterBuild" Condition="'$(IsWindows)'=='true'">
-    <Error Condition="! Exists('$(URHONET_HOME_ROOT)/template/libs/windows/Urho3D.dll')" Text="Urho3D.dll not found are you sure URHONET_HOME_ROOT is pointing to the right place ?" /> 
+    <PropertyGroup>
+      <libUrho3D>@(URHONET_HOME_ROOT)/template/libs/windows/Urho3D.dll</libUrho3D>
+    </PropertyGroup>  
+    <Error Condition="! Exists('$(libUrho3D)')" Text="Urho3D.dll not found are you sure URHONET_HOME_ROOT is pointing to the right place ?" /> 
     <Copy SourceFiles="@(AssetsSourceFiles)" DestinationFolder="$(OutDir)\%(RecursiveDir)" SkipUnchangedFiles="true" Retries="3" RetryDelayMilliseconds="300" />
-    <Copy SourceFiles="$(URHONET_HOME_ROOT)/template/libs/windows/Urho3D.dll" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(libUrho3D)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="$(OutDir)/Game.dll" DestinationFolder="@(AndroidAssetsDestinationDir)" SkipUnchangedFiles="true" />
   </Target>
 
 
   <Target Name="CopyCustomContentMacOS" AfterTargets="AfterBuild" Condition="'$(IsOSX)'=='true'">
-    <Error Condition="! Exists('$(URHONET_HOME_ROOT)/template/libs/macos/libUrho3D.dylib')" Text="libUrho3D.dylib not found are you sure URHONET_HOME_ROOT is pointing to the right place ?" /> 
+    <PropertyGroup>
+      <libUrho3D>@(URHONET_HOME_ROOT)/template/libs/macos/libUrho3D.dylib</libUrho3D>
+    </PropertyGroup>
+    <Error Condition="! Exists('$(libUrho3D)')" Text="libUrho3D.dylib not found are you sure URHONET_HOME_ROOT is pointing to the right place ?" /> 
     <Copy SourceFiles="@(AssetsSourceFiles)" DestinationFolder="$(OutDir)\%(RecursiveDir)" SkipUnchangedFiles="true" Retries="3" RetryDelayMilliseconds="300" />
-    <Copy SourceFiles="$(URHONET_HOME_ROOT)/template/libs/macos/libUrho3D.dylib" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(libUrho3D)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="$(OutDir)/Game.dll" DestinationFolder="@(AndroidAssetsDestinationDir)" SkipUnchangedFiles="true" />
   </Target>
 
 
   <Target Name="CopyCustomContentLinux" AfterTargets="AfterBuild" Condition="'$(IsLinux)'=='true'">
-  <Error Condition="! Exists('$(URHONET_HOME_ROOT)/template/libs/linux/libUrho3D.so')" Text="libUrho3D.so not found are you sure URHONET_HOME_ROOT is pointing to the right place ?" /> 
+    <PropertyGroup>
+      <libUrho3D>@(URHONET_HOME_ROOT)/template/libs/linux/libUrho3D.so</libUrho3D>
+    </PropertyGroup>
+    <Error Condition="! Exists('$(libUrho3D)')" Text="libUrho3D.so not found are you sure URHONET_HOME_ROOT is pointing to the right place ?" /> 
     <Copy SourceFiles="@(AssetsSourceFiles)" DestinationFolder="$(OutDir)\%(RecursiveDir)" SkipUnchangedFiles="true" Retries="3" RetryDelayMilliseconds="300" />
-    <Copy SourceFiles="$(URHONET_HOME_ROOT)/template/libs/linux/libUrho3D.so" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(libUrho3D)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="$(OutDir)/Game.dll" DestinationFolder="@(AndroidAssetsDestinationDir)" SkipUnchangedFiles="true" />
   </Target>
 
@@ -132,5 +156,12 @@
         <RemoveDir Directories="output" />
         <RemoveDir Directories="obj" />
   </Target>
+
+  <!-- needed for intellisense -->
+  <ItemGroup>
+    <Reference Include="UrhoDotNet" >
+        <HintPath>References\UrhoDotNet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
 </Project>

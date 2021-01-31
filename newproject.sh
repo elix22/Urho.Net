@@ -48,21 +48,17 @@ else
 	alias aliassedinplace='sed -i""'
 fi
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-        if [ -f ~/.bash_profile ]; then
-            echo "sourcing .bash_profile "
-        	. ~/.bash_profile
-        fi	
-else
-        if [ -f ~/.bashrc ]; then
-            echo "sourcing .bashrc"
-			. ~/.bashrc
-		fi
+
+if [ ! -f ~/.urhonet_config/urhonethome ]; then
+	echo  "1 Urho.Net is not configured , configuring now  "
+	./configure.sh
 fi
 
-if [ ! -n "$URHONET_HOME_ROOT" ]; then
-	echo  "URHONET_HOME_ROOT not set , setting "
-	. set_urhonet_home.sh
+URHONET_HOME_ROOT=$(cat ~/.urhonet_config/urhonethome)
+
+if [ ! -d "$URHONET_HOME_ROOT" ]; then
+	echo  "Urho.Net is not configured , please  run configure.sh (configure.bat on Windows) from Urho.Net installation folder  "
+	exit -1
 else
 	echo  "URHONET_HOME_ROOT=$URHONET_HOME_ROOT"
 fi
@@ -158,6 +154,9 @@ currPwd=`pwd`
 projPath=`cd $projPath; pwd`
 `cd $currPwd`
 
+
+mkdir "-p" "$projPath/References"
+cp "-f" "template/libs/dotnet/urho/desktop/UrhoDotNet.dll" "$projPath/References/"
 
 cp "-r" "template/.vscode" "$projPath"
 

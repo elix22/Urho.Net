@@ -50,17 +50,6 @@ else
 	alias aliassedinplace='sed -i""'
 fi
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-        if [ -f ~/.bash_profile ]; then
-            echo "sourcing .bash_profile "
-        	. ~/.bash_profile
-        fi	
-else
-        if [ -f ~/.bashrc ]; then
-            echo "sourcing .bashrc"
-			. ~/.bashrc
-		fi
-fi
 
 verify_dir_exist_or_exit()
 {
@@ -70,8 +59,15 @@ verify_dir_exist_or_exit()
     fi
 }
 
-if [ ! -n "$URHONET_HOME_ROOT" ]; then
-	echo  "URHONET_HOME_ROOT path not set , set it by going to the Urho.Net folder installation and invoking set_urhonet_home.sh (on windows set_urhonet_home.bat )  "
+if [ ! -f ~/.urhonet_config/urhonethome ]; then
+	echo  "1 Urho.Net is not configured , please  run configure.sh (configure.bat on Windows) from  the Urho.Net installation folder  "
+	exit -1
+fi
+
+URHONET_HOME_ROOT=$(cat ~/.urhonet_config/urhonethome)
+
+if [ ! -d "$URHONET_HOME_ROOT" ]; then
+	echo  "Urho.Net is not configured , please  run configure.sh (configure.bat on Windows) from the Urho.Net installation folder  "
 	exit -1
 else
 	echo  "URHONET_HOME_ROOT=$URHONET_HOME_ROOT"
