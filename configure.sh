@@ -61,3 +61,19 @@ fi
 
 touch ~/${URHONET_CONFIG_FOLDER}/urhonethome
 echo $currPwd >> ~/${URHONET_CONFIG_FOLDER}/urhonethome
+
+if [[ -f ~/.urhonet_config/urhonethome  &&  -f ~/.urhonet_config/UrhoNetHome.config ]]; then
+	echo ""
+	echo "Urho.Net configured!"
+	echo ""
+	URHONET_HOME=$(cat ~/.urhonet_config/urhonethome)
+	URHONET_HOME_XML=$(cat ~/.urhonet_config/UrhoNetHome.config)
+	echo "cat ${HOME}/.urhonet_config/urhonethome"
+	echo "${URHONET_HOME}"
+	echo ""
+	echo "cat ${HOME}/.urhonet_config/UrhoNetHome.config"
+	echo "${URHONET_HOME_XML}"
+	echo ""
+else
+	echo "Urho.Net configuration failure!"
+fi
