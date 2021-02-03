@@ -77,3 +77,5 @@ if [[ -f ~/.urhonet_config/urhonethome  &&  -f ~/.urhonet_config/UrhoNetHome.con
 else
 	echo "Urho.Net configuration failure!"
 fi
+
+read -p "getk: " getk
