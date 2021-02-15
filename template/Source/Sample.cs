@@ -267,23 +267,21 @@ namespace TEMPLATE_PROJECT_NAME
 			var renderer = Renderer;
 			switch (e.Key)
 			{
-				/* TBD ELI
 				case Key.N1:
-					var quality = renderer.TextureQuality;
+					var quality = (int)renderer.TextureQuality;
 					++quality;
 					if (quality > 2)
 						quality = 0;
-					renderer.TextureQuality = quality;
+					renderer.TextureQuality = (MaterialQuality)quality;
 					break;
 
 				case Key.N2:
-					var mquality = renderer.MaterialQuality;
+					var mquality = (int)renderer.MaterialQuality;
 					++mquality;
 					if (mquality > 2)
 						mquality = 0;
-					renderer.MaterialQuality = mquality;
+					renderer.MaterialQuality = (MaterialQuality)mquality;
 					break;
-				*/
 				case Key.N3:
 					renderer.SpecularLighting = !renderer.SpecularLighting;
 					break;
@@ -322,7 +320,7 @@ namespace TEMPLATE_PROJECT_NAME
 				case Key.N9:
 					Image screenshot = new Image();
 					Graphics.TakeScreenShot(screenshot);
-					screenshot.SavePNG(FileSystem.ProgramDir + $"Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
+					screenshot.SavePNG(FileSystem.CurrentDir + $"Assets/Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
 					break;
 			}
 		}
