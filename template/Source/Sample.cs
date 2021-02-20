@@ -83,7 +83,12 @@ namespace TEMPLATE_PROJECT_NAME
 
 		protected override void Start ()
 		{
-			Log.LogMessage += e => Debug.WriteLine($"[{e.Level}] {e.Message}");
+			if (Platform != Platforms.Android)
+            {
+				// TBD elix22 ,  crashing on Android
+                Log.LogMessage += e => Debug.WriteLine($"[{e.Level}] {e.Message}");
+            }
+			
 			base.Start();
 			if (Platform == Platforms.Android || 
 				Platform == Platforms.iOS || 
