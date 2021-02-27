@@ -158,6 +158,7 @@
         <RemoveDir Directories="libs" />
         <RemoveDir Directories="output" />
         <RemoveDir Directories="obj" />
+        <RemoveDir Directories= "Assets/Data/DotNet" />
   </Target>
 
   <!-- needed for intellisense -->
