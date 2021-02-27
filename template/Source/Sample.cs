@@ -322,11 +322,15 @@ namespace TEMPLATE_PROJECT_NAME
 					renderer.DynamicInstancing = !renderer.DynamicInstancing;
 					break;
 
-				case Key.N9:
-					Image screenshot = new Image();
-					Graphics.TakeScreenShot(screenshot);
-					screenshot.SavePNG(FileSystem.CurrentDir + $"Assets/Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
-					break;
+
+                case Key.N9:
+                    if (Platform != Platforms.Android && Platform != Platforms.iOS)
+                    {
+                        Image screenshot = new Image();
+                        Graphics.TakeScreenShot(screenshot);
+                        screenshot.SavePNG(FileSystem.CurrentDir + $"Assets/Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
+                    }
+                    break;
 			}
 		}
 
