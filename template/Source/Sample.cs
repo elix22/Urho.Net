@@ -83,7 +83,12 @@ namespace TEMPLATE_PROJECT_NAME
 
 		protected override void Start ()
 		{
-			Log.LogMessage += e => Debug.WriteLine($"[{e.Level}] {e.Message}");
+			if (Platform != Platforms.Android)
+            {
+				// TBD elix22 ,  crashing on Android
+                Log.LogMessage += e => Debug.WriteLine($"[{e.Level}] {e.Message}");
+            }
+			
 			base.Start();
 			if (Platform == Platforms.Android || 
 				Platform == Platforms.iOS || 
@@ -317,11 +322,15 @@ namespace TEMPLATE_PROJECT_NAME
 					renderer.DynamicInstancing = !renderer.DynamicInstancing;
 					break;
 
-				case Key.N9:
-					Image screenshot = new Image();
-					Graphics.TakeScreenShot(screenshot);
-					screenshot.SavePNG(FileSystem.CurrentDir + $"Assets/Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
-					break;
+
+                case Key.N9:
+                    if (Platform != Platforms.Android && Platform != Platforms.iOS)
+                    {
+                        Image screenshot = new Image();
+                        Graphics.TakeScreenShot(screenshot);
+                        screenshot.SavePNG(FileSystem.CurrentDir + $"Assets/Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
+                    }
+                    break;
 			}
 		}
 
