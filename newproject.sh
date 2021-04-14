@@ -157,6 +157,7 @@ projPath=`cd $projPath; pwd`
 
 mkdir "-p" "$projPath/References"
 cp "-f" "template/libs/dotnet/urho/desktop/UrhoDotNet.dll" "$projPath/References/"
+cp "-f" "template/libs/dotnet/urho/desktop/UrhoDotNet.xml" "$projPath/References/"
 
 cp "-r" "template/.vscode" "$projPath"
 
